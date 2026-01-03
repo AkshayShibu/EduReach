@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduReach | Student Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1e40af;
+            --primary-dark: #1e3a8a;
+            --primary-light: #3b82f6;
+            --accent: #10b981;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --bg: #ffffff;
+            --card-bg: #ffffff;
+            --border: #e2e8f0;
+            --shadow: 0 10px 30px rgba(0,0,0,0.08);
+            --gradient-start: #eef2ff;
+            --gradient-end: #f0f9ff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: var(--text);
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Subtle floating background elements – matching home page */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: 
+                radial-gradient(circle at 15% 80%, rgba(59, 130, 246, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at 85% 20%, rgba(16, 185, 129, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(30, 64, 138, 0.08) 0%, transparent 50%);
+            animation: float 28s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(4%, 6%) rotate(1.5deg); }
+        }
+
+        header {
+            background: rgba(30, 58, 138, 0.95);
+            backdrop-filter: blur(12px);
+            color: #fff;
+            padding: 20px 40px;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        nav a {
+            color: #fff;
+            margin-left: 32px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            position: relative;
+            transition: color 0.2s;
+        }
+
+        nav a:hover {
+            color: var(--accent);
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        .user-greeting {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        main {
+            padding-top: 120px;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px;
+        }
+
+        .welcome-section {
+            margin-bottom: 60px;
+        }
+
+        .welcome-section h1 {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            background: linear-gradient(90deg, var(--primary-dark), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .welcome-section p {
+            font-size: 20px;
+            color: var(--text-light);
+            max-width: 700px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 32px;
+            margin-bottom: 60px;
+        }
+
+        .dashboard-card {
+            background: var(--card-bg);
+            padding: 32px;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            transition: all 0.4s ease;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+        }
+
+        .dashboard-card h3 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .course-list {
+            list-style: none;
+        }
+
+        .course-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .course-list li:last-child {
+            border-bottom: none;
+        }
+
+        .course-status {
+            font-size: 14px;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .progress-container {
+            margin-top: 20px;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 15px;
+            color: var(--text-light);
+        }
+
+        .progress-bar {
+            height: 16px;
+            background: #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 65%;
+            background: linear-gradient(to right, var(--primary), var(--primary-light));
+            border-radius: 8px;
+            position: relative;
+            transition: width 1.2s ease;
+        }
+
+        .progress-fill::after {
+            content: '65%';
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .activities-list {
+            list-style: none;
+        }
+
+        .activities-list li {
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 16px;
+        }
+
+        .activities-list li:last-child {
+            border-bottom: none;
+        }
+
+        .activity-date {
+            font-size: 14px;
+            color: var(--text-light);
+            background: #f1f5f9;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .announcements-card {
+            grid-column: 1 / -1;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 12px;
+        }
+
+        table thead th {
+            text-align: left;
+            padding: 16px 20px;
+            background: #f8fafc;
+            color: var(--primary-dark);
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        table tbody td {
+            padding: 20px;
+            background: #f9fafb;
+            font-size: 16px;
+        }
+
+        table tbody tr {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border-radius: 12px;
+        }
+
+        table tbody tr td:first-child {
+            border-top-left-radius: 12px;
+            border-bottom-left-radius: 12px;
+        }
+
+        table tbody tr td:last-child {
+            border-top-right-radius: 12px;
+            border-bottom-right-radius: 12px;
+        }
+
+        footer {
+            background: var(--primary-dark);
+            color: #cbd5e1;
+            padding: 60px 40px 30px;
+            margin-top: 100px;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-logo {
+            font-size: 28px;
+            font-weight: 800;
+            color: white;
+        }
+
+        .footer-logo span {
+            color: var(--accent);
+        }
+
+        .footer-links a {
+            color: #cbd5e1;
+            margin-left: 24px;
+            text-decoration: none;
+            font-size: 15px;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent);
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            font-size: 14px;
+            color: #94a3b8;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 16px 20px;
+            }
+            .header-content {
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+            }
+            nav {
+                margin: 10px 0;
+            }
+            nav a {
+                margin: 0 12px;
+            }
+            main {
+                padding: 120px 20px 60px;
+            }
+            .welcome-section h1 {
+                font-size: 40px;
+            }
+            .welcome-section p {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-content">
+        <div class="left-section">
+            <div class="logo">Edu<span>Reach</span></div>
+            <div class="user-greeting">Hello, Student 👋</div>
+        </div>
+
+        <div class="right-section">
+            <nav>
+                <a href="index.html">Home</a>
+                <!-- <a href="#">My Courses</a>
+                <a href="#">Progress</a> -->
+                <a href="login.html">Logout</a>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<main>
+    <p></p>
+    <br>
+    <br>
+    <br>
+    <section class="welcome-section">
+        <h1>Welcome back!</h1>
+        <p>Continue your learning journey. Here's an overview of your courses, progress, and upcoming activities.</p>
+    </section>
+
+    <div class="dashboard-grid">
+        <div class="dashboard-card">
+            <h3>🎓 My Enrolled Courses</h3>
+            <ul class="course-list">
+                <li>Introduction to Python <span class="course-status">In Progress</span></li>
+                <li>Web Development Basics <span class="course-status">75% Complete</span></li>
+                <li>Data Structures & Algorithms <span class="course-status">Just Started</span></li>
+                <li>Advanced JavaScript <span class="course-status">Not Started</span></li>
+            </ul>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>📊 Overall Learning Progress</h3>
+            <div class="progress-container">
+                <div class="progress-label">
+                    <span>Completion Rate</span>
+                    <span>65%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+            </div>
+            <p style="margin-top: 24px; color: var(--text-light);">
+                You're doing great! Keep up the momentum to unlock new achievements.
+            </p>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>🔔 Upcoming Activities</h3>
+            <ul class="activities-list">
+                <li>Python Programming Quiz <span class="activity-date">Jan 10</span></li>
+                <li>Web Development Assignment Due <span class="activity-date">Jan 15</span></li>
+                <li>Live Session: Advanced JS <span class="activity-date">Jan 20</span></li>
+                <li>Mid-term Project Submission <span class="activity-date">Jan 28</span></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="dashboard-card announcements-card">
+        <h3>📢 Recent Announcements</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Announcement</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Jan 03, 2026</td>
+                    <td>New advanced module added to Python course – includes AI integration topics!</td>
+                </tr>
+                <tr>
+                    <td>Jan 02, 2026</td>
+                    <td>Live Q&A session scheduled with industry expert on Web Development trends</td>
+                </tr>
+                <tr>
+                    <td>Dec 30, 2025</td>
+                    <td>Course materials for Data Structures updated with new practice problems</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<footer>
+    <div class="footer-content">
+        <div class="footer-logo">Edu<span>Reach</span></div>
+        <!-- <div class="footer-links">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+            <a href="#">Support</a>
+            <a href="#">Contact</a>
+        </div> -->
+    </div>
+    <div class="copyright">
+        © 2026 EduReach. All rights reserved.
+    </div>
+</footer>
+
+</body>
+</html>

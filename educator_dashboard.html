@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduReach | Educator Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1e40af;
+            --primary-dark: #1e3a8a;
+            --primary-light: #3b82f6;
+            --accent: #10b981;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --bg: #ffffff;
+            --card-bg: #ffffff;
+            --border: #e2e8f0;
+            --shadow: 0 10px 30px rgba(0,0,0,0.08);
+            --gradient-start: #eef2ff;
+            --gradient-end: #f0f9ff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: var(--text);
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Subtle floating background elements – matching home & student dashboard */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: 
+                radial-gradient(circle at 15% 80%, rgba(59, 130, 246, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at 85% 20%, rgba(16, 185, 129, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(30, 64, 138, 0.08) 0%, transparent 50%);
+            animation: float 28s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(4%, 6%) rotate(1.5deg); }
+        }
+
+        header {
+            background: rgba(30, 58, 138, 0.95);
+            backdrop-filter: blur(12px);
+            color: #fff;
+            padding: 20px 40px;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .left-section {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        .user-greeting {
+            font-size: 16px;
+            font-weight: 600;
+            opacity: 0.9;
+        }
+
+        .right-section {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            position: relative;
+            transition: color 0.2s;
+            margin-left: 25px;
+        }
+
+        nav a:hover {
+            color: var(--accent);
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        main {
+            padding-top: 120px;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px;
+        }
+
+        .welcome-section {
+            margin-bottom: 60px;
+        }
+
+        .welcome-section h1 {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            background: linear-gradient(90deg, var(--primary-dark), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .welcome-section p {
+            font-size: 20px;
+            color: var(--text-light);
+            max-width: 700px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 32px;
+            margin-bottom: 60px;
+        }
+
+        .dashboard-card {
+            background: var(--card-bg);
+            padding: 32px;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            transition: all 0.4s ease;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+        }
+
+        .dashboard-card h3 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* My Courses */
+        .course-list {
+            list-style: none;
+        }
+
+        .course-list li {
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .course-list li:last-child {
+            border-bottom: none;
+        }
+
+        .enrolled-count {
+            font-size: 14px;
+            color: var(--accent);
+            font-weight: 600;
+            background: #f0fdf4;
+            padding: 6px 12px;
+            border-radius: 12px;
+        }
+
+        /* Upload Material & Post Announcement Forms */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--text);
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: #f9fafb;
+            font-size: 16px;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(to right, var(--primary), var(--primary-light));
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Student Enrollments Table */
+        .enrollments-card {
+            grid-column: 1 / -1;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 12px;
+        }
+
+        table thead th {
+            text-align: left;
+            padding: 16px 20px;
+            background: #f8fafc;
+            color: var(--primary-dark);
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        table tbody td {
+            padding: 20px;
+            background: #f9fafb;
+            font-size: 16px;
+        }
+
+        table tbody tr {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border-radius: 12px;
+        }
+
+        table tbody tr td:first-child {
+            border-top-left-radius: 12px;
+            border-bottom-left-radius: 12px;
+        }
+
+        table tbody tr td:last-child {
+            border-top-right-radius: 12px;
+            border-bottom-right-radius: 12px;
+        }
+
+        .status-active {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        footer {
+            background: var(--primary-dark);
+            color: #cbd5e1;
+            padding: 60px 40px 30px;
+            margin-top: 100px;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-logo {
+            font-size: 28px;
+            font-weight: 800;
+            color: white;
+        }
+
+        .footer-logo span {
+            color: var(--accent);
+        }
+
+        .footer-links a {
+            color: #cbd5e1;
+            margin-left: 24px;
+            text-decoration: none;
+            font-size: 15px;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent);
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            font-size: 14px;
+            color: #94a3b8;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 16px 20px;
+            }
+            .header-content {
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+            }
+            .left-section, .right-section {
+                width: 100%;
+                justify-content: center;
+            }
+            nav {
+                margin: 10px 0;
+            }
+            nav a {
+                margin: 0 12px;
+                
+            }
+            main {
+                padding: 140px 20px 60px;
+            }
+            .welcome-section h1 {
+                font-size: 40px;
+            }
+            .welcome-section p {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-content">
+        <div class="left-section">
+            <div class="logo">Edu<span>Reach</span></div>
+            <div class="user-greeting">Hello, Educator </div>
+        </div>
+
+        <div class="right-section">
+            <nav>
+                <a href="index.html">Home </a>
+                <!-- <a href="#">My Courses</a>
+                <a href="#">Analytics</a> -->
+                <a href="login.html">Logout</a>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<main>
+    <section class="welcome-section">
+        <br>
+        <br>
+        <br>
+        <h1>Welcome back!</h1>
+        <p>Manage your courses, engage with students, and create impactful learning experiences.</p>
+    </section>
+
+    <div class="dashboard-grid">
+        <div class="dashboard-card">
+            <h3>📚 My Courses</h3>
+            <ul class="course-list">
+                <li>Introduction to Python <span class="enrolled-count">42 enrolled</span></li>
+                <li>Web Development Basics <span class="enrolled-count">38 enrolled</span></li>
+                <li>Data Structures & Algorithms <span class="enrolled-count">29 enrolled</span></li>
+            </ul>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>📤 Upload Learning Material</h3>
+            <div class="form-group">
+                <label>Course Name</label>
+                <input type="text" placeholder="e.g., Introduction to Python">
+            </div>
+            <div class="form-group">
+                <label>Material Title</label>
+                <input type="text" placeholder="e.g., Week 5 - Functions">
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea placeholder="Brief description of the material..."></textarea>
+            </div>
+            <button class="btn-primary">Upload Material</button>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>📢 Post Announcement</h3>
+            <div class="form-group">
+                <label>Announcement Message</label>
+                <textarea placeholder="Write your announcement here..."></textarea>
+            </div>
+            <button class="btn-primary">Post Announcement</button>
+        </div>
+    </div>
+
+    <div class="dashboard-card enrollments-card">
+        <h3>👥 Student Enrollments</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Student Name</th>
+                    <th>Course</th>
+                    <th>Enrollment Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Akhil Sharma</td>
+                    <td>Introduction to Python</td>
+                    <td>Dec 15, 2025</td>
+                    <td class="status-active">Active</td>
+                </tr>
+                <tr>
+                    <td>Meera Patel</td>
+                    <td>Web Development Basics</td>
+                    <td>Dec 20, 2025</td>
+                    <td class="status-active">Active</td>
+                </tr>
+                <tr>
+                    <td>Rohan Kumar</td>
+                    <td>Introduction to Python</td>
+                    <td>Jan 01, 2026</td>
+                    <td class="status-active">Active</td>
+                </tr>
+                <tr>
+                    <td>Sara Ahmed</td>
+                    <td>Data Structures & Algorithms</td>
+                    <td>Dec 28, 2025</td>
+                    <td class="status-active">Active</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<footer>
+    <div class="footer-content">
+        <div class="footer-logo">Edu<span>Reach</span></div>
+        <div class="footer-links">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+            <a href="#">Support</a>
+            <a href="#">Contact</a>
+        </div>
+    </div>
+    <div class="copyright">
+        © 2026 EduReach. All rights reserved.
+    </div>
+</footer>
+
+</body>
+</html>
